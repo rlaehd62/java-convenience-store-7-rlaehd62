@@ -12,6 +12,7 @@ import store.model.DataFile;
 import store.test.policy.SalesPolicy;
 import store.test.product.Product;
 import store.test.product.SalesProduct;
+import store.test.product.SalesType;
 import store.test.repository.ProductRepository;
 import store.test.repository.SalesPolicyRepository;
 import store.test.repository.SalesProductRepository;
@@ -54,6 +55,14 @@ public class SalesProductService {
                 .forEach(consumer);
     }
 
+    private SalesProduct loadZeroQuantityProduct(SalesProduct origin) {
+        if(origin.isType(SalesType.PROMOTIONAL)) {
+            SalesPolicy policy = salesPolicyRepository.findPolicy("");
+            return SalesProduct.of(origin.getProduct(), policy, "0");
+        }
+        return null;
+    }
+
     private SalesProduct loadSalesProduct(String line) {
         Validator.validate(line, Regex.LIST_FORMAT, ErrorMessage.FILE_FORMAT_INVALID);
         String DELIMITER = SystemConfig.DELIMITER.getValue();
@@ -75,7 +84,11 @@ public class SalesProductService {
         DataFile file = DataReader.readData(DataPath.PRODUCTS_FILE);
         file.forEach(line -> {
             SalesProduct salesProduct = loadSalesProduct(line);
+            SalesProduct zeroProduct = loadZeroQuantityProduct(salesProduct);
             salesProductRepository.save(salesProduct);
+            if(zeroProduct != null) {
+                salesProductRepository.save(zeroProduct);
+            }
         });
     }
 }
