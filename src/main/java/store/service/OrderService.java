@@ -53,7 +53,7 @@ public class OrderService {
         takePromotionalsFirst(order);
         SalesProduct salesProduct = order.getSalesProduct();
         if (!salesProduct.hasQuantity(order.getTotalQuantity())) {
-            throw new ProductException(ErrorMessage.QUANTITY_UNDERFLOW);
+            throw new ProductException(ErrorMessage.QUANTITY_OVERFLOW);
         }
         int requiredQuantity = order.getTotalQuantity();
         int currentQuantity = salesProduct.getQuantity();
