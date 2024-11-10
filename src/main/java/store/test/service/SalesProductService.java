@@ -1,6 +1,8 @@
 package store.test.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import store.config.constant.ErrorMessage;
@@ -46,8 +48,7 @@ public class SalesProductService {
         SalesPolicy policy = salesProduct.getPolicy();
         amountOfBuy = Math.min(salesProduct.getQuantity(), amountOfBuy);
         int possibleSets = amountOfBuy / (policy.getTotalAmount());
-        int expected = possibleSets * (policy.getTotalAmount());
-        return expected;
+        return possibleSets * (policy.getTotalAmount());
     }
 
     public void runThroughSalesProducts(Consumer<SalesProduct> consumer) {
@@ -55,40 +56,20 @@ public class SalesProductService {
                 .forEach(consumer);
     }
 
-    private SalesProduct loadZeroQuantityProduct(SalesProduct origin) {
-        if(origin.isType(SalesType.PROMOTIONAL)) {
-            SalesPolicy policy = salesPolicyRepository.findPolicy("");
-            return SalesProduct.of(origin.getProduct(), policy, "0");
-        }
-        return null;
-    }
-
-    private SalesProduct loadSalesProduct(String line) {
-        Validator.validate(line, Regex.LIST_FORMAT, ErrorMessage.FILE_FORMAT_INVALID);
+    private void updateScalesProduct(String line) {
         String DELIMITER = SystemConfig.DELIMITER.getValue();
         List<String> elements = List.of(line.split(DELIMITER));
         String productName = elements.get(0);
         String policyName = elements.get(3);
         SalesPolicy policy = salesPolicyRepository.findPolicy(policyName);
-        Optional<Product> optional = productRepository.findProduct(productName);
-        optional.orElseThrow(() -> new ProductException(ErrorMessage.NO_ITEM_FOUND));
-        Product product = optional.get();
-        return SalesProduct.of(product, policy, elements.get(2));
-    }
-
-    public void validateProduct(String name) {
-        salesProductRepository.findSalesProductsByName(name);
+        SalesType type = SalesType.getType(policy);
+        SalesProduct salesProduct = salesProductRepository.findSalesProductsByName(productName, type);
+        salesProduct.setQuantity(Integer.parseInt(elements.get(2)));
+        salesProduct.setPolicy(policy);
     }
 
     public void loadSalesProducts() {
         DataFile file = DataReader.readData(DataPath.PRODUCTS_FILE);
-        file.forEach(line -> {
-            SalesProduct salesProduct = loadSalesProduct(line);
-            SalesProduct zeroProduct = loadZeroQuantityProduct(salesProduct);
-            salesProductRepository.save(salesProduct);
-            if(zeroProduct != null) {
-                salesProductRepository.save(zeroProduct);
-            }
-        });
+        file.forEach(this::updateScalesProduct);
     }
 }
