@@ -18,6 +18,11 @@ public class SalesProductRepository {
     }
 
     public void save(SalesProduct product) {
+        String name = product.getProduct().getName();
+        SalesType type = product.getSalesType();
+        if(existsSalesProductWithType(name, type)) {
+            return;
+        }
         manager.addProduct(product);
     }
 
@@ -33,9 +38,10 @@ public class SalesProductRepository {
                 .toList();
     }
 
-    public boolean existsSalesProduct(String name) {
+    public boolean existsSalesProductWithType(String name, SalesType type) {
         return manager.getProducts()
                 .stream()
+                .filter(salesProduct -> salesProduct.isType(type))
                 .map(SalesProduct::getProduct)
                 .map(Product::getName)
                 .anyMatch(name::equals);
@@ -50,11 +56,5 @@ public class SalesProductRepository {
                 })
                 .findFirst()
                 .orElseThrow(() -> new ProductException(ErrorMessage.NO_ITEM_FOUND));
-    }
-
-    public SalesProduct findSalesProductsByName(String name) {
-        Optional<SalesProduct> optional = manager.getProduct(name);
-        optional.orElseThrow(() -> new ProductException(ErrorMessage.NO_ITEM_FOUND));
-        return optional.get();
     }
 }

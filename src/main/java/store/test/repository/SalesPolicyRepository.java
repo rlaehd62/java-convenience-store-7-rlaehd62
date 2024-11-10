@@ -14,6 +14,10 @@ public class SalesPolicyRepository {
         DEFAULT_POLICY = new DefaultPolicy("");
     }
 
+    public DefaultPolicy DEFAULT_POLICY() {
+        return DEFAULT_POLICY;
+    }
+
     public SalesPolicy findPolicy(String name) {
         return manager.getPolicy(name)
                 .filter(SalesPolicy::isAvailable)
