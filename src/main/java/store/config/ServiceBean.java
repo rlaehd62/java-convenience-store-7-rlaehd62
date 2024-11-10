@@ -19,8 +19,8 @@ public class ServiceBean {
 
     private ServiceBean() {
         bean = RepositoryBean.getInstance();
-        productService = new ProductService(bean.getProductRepository());
         salesPolicyService = new SalesPolicyService(bean.getSalesPolicyRepository());
+        productService = new ProductService(bean.getProductRepository(), bean.getSalesProductRepository(), bean.getSalesPolicyRepository());
         salesProductService = new SalesProductService(bean.getSalesPolicyRepository(), bean.getProductRepository(),
                 bean.getSalesProductRepository());
         paymentService = new PaymentService(bean.getOrderRepository(), bean.getReceiptRepository());
