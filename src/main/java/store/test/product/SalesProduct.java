@@ -6,7 +6,7 @@ public class SalesProduct {
 
     private final Product product;
     private final SalesType salesType;
-    private final SalesPolicy policy;
+    private SalesPolicy policy;
     private int quantity;
 
     public SalesProduct(Product product, int quantity, SalesPolicy policy, SalesType salesType) {
@@ -14,6 +14,11 @@ public class SalesProduct {
         this.quantity = quantity;
         this.policy = policy;
         this.salesType = salesType;
+    }
+
+    public static SalesProduct of(Product product, SalesPolicy policy,  SalesType type, String quantityInput) {
+        int quantity = Integer.parseInt(quantityInput);
+        return new SalesProduct(product, quantity, policy, type);
     }
 
     public static SalesProduct of(Product product, SalesPolicy policy, String quantityInput) {
@@ -32,6 +37,10 @@ public class SalesProduct {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void setPolicy(SalesPolicy policy) {
+        this.policy = policy;
     }
 
     public SalesPolicy getPolicy() {
