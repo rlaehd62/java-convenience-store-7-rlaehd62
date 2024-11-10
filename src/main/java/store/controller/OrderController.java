@@ -14,17 +14,5 @@ public class OrderController {
 
     public void toOrder() {
         service.makeOrders();
-
-//        service.createOrder();
-//
-//
-//        AtomicReference<Order> order = new AtomicReference<>();
-//        order.set(new Order());
-//        cart.forEach(cartItem -> {
-//            OrderItem orderItem = service.toOrderItem(cartItem);
-//            service.classifyOrder(order.get(), orderItem);
-//        });
-//
-//        return order.get();
     }
 }

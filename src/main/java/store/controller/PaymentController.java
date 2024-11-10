@@ -47,10 +47,9 @@ public class PaymentController {
         paymentService.prepareReceipt();
         paymentService.confirmPayment(this::askForPayment);
         paymentService.confirmMembership(this::askForMembership, e -> OutputView.of(e.getMessage(), true));
-
         FlowHandler.run(() -> {
             paymentService.processReceipt(this::printReceipt);
             orderService.runTransaction();
-        }, e -> OutputView.of(ErrorMessage.QUANTITY_OVERFLOW, true));
+        }, e -> OutputView.of(e.getMessage(), true));
     }
 }

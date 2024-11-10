@@ -43,7 +43,7 @@ public class CartController {
             takeOrder();
             searchForGiveAways();
             return true;
-        }, e -> OutputView.of(ErrorMessage.ETC_INVALID_INPUT.toString(), true));
+        }, e -> OutputView.of(e.getMessage(), true));
     }
 
 }
