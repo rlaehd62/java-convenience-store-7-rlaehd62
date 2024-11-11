@@ -22,7 +22,7 @@ public class ServiceBean {
         salesPolicyService = new SalesPolicyService(bean.getSalesPolicyRepository());
         productService = new ProductService(bean.getProductRepository(), bean.getSalesProductRepository(),
                 bean.getSalesPolicyRepository());
-        salesProductService = new SalesProductService(bean.getSalesPolicyRepository(), bean.getProductRepository(),
+        salesProductService = new SalesProductService(bean.getSalesPolicyRepository(),
                 bean.getSalesProductRepository());
         paymentService = new PaymentService(bean.getOrderRepository(), bean.getReceiptRepository());
         orderService = new OrderService(bean.getOrderRepository(), bean.getReceiptRepository(),
@@ -48,6 +48,10 @@ public class ServiceBean {
         salesProductService.loadSalesProducts();
     }
 
+    public ProductService getProductService() {
+        return productService;
+    }
+
     public SalesProductService getSalesProductService() {
         return salesProductService;
     }
@@ -58,6 +62,10 @@ public class ServiceBean {
 
     public OrderService getOrderService() {
         return orderService;
+    }
+
+    public SalesPolicyService getSalesPolicyService() {
+        return salesPolicyService;
     }
 
     public PaymentService getPaymentService() {
