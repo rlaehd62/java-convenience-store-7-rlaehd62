@@ -17,5 +17,6 @@ public class FrontController {
         OutputView.printGreeting();
         OutputView.of("");
         salesProductService.runThroughSalesProducts(product -> OutputView.of(product.toString()));
+        OutputView.of("");
     }
 }

@@ -1,5 +1,6 @@
 package store.controller;
 
+import store.config.SystemBean;
 import store.service.Validator;
 import store.utility.FlowHandler;
 import store.view.InputView;
@@ -19,6 +20,17 @@ public class ControllerBroker {
         orderController = new OrderController();
         paymentController = new PaymentController();
         validator = new Validator();
+    }
+
+    public void run() {
+        try {
+            runMainProcess();
+            if (askForRetry()) {
+                run();
+            }
+        } catch (Exception e) {
+            SystemBean.getInstance().clear();
+        }
     }
 
     private void runMainProcess() {
@@ -41,10 +53,4 @@ public class ControllerBroker {
         }, (e) -> OutputView.of(e.getMessage()));
     }
 
-    public void run() {
-        runMainProcess();
-        if (askForRetry()) {
-            run();
-        }
-    }
 }

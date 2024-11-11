@@ -19,11 +19,23 @@ public class CartController {
         service = bean.getCartService();
     }
 
+    public void receiveOrder() {
+        FlowHandler.runWithRetry(() -> {
+            takeOrder();
+            searchForGiveAways();
+            return true;
+        }, e -> OutputView.of(e.getMessage(), true));
+    }
+
     private void takeOrder() {
         String orderInput = InputView.readOrder();
         validator.isValidOrder(orderInput);
         service.createCart(orderInput);
         service.checkValidityOfCart();
+    }
+
+    private void searchForGiveAways() {
+        service.searchForGiveAways(this::askForGiveAways);
     }
 
     private void askForGiveAways(CartItem cartItem) {
@@ -34,16 +46,5 @@ public class CartController {
         }, () -> service.updateGiveAways(cartItem), e -> OutputView.of(ErrorMessage.YN_FAILURE, true));
     }
 
-    private void searchForGiveAways() {
-        service.searchForGiveAways(this::askForGiveAways);
-    }
-
-    public void receiveOrder() {
-        FlowHandler.runWithRetry(() -> {
-            takeOrder();
-            searchForGiveAways();
-            return true;
-        }, e -> OutputView.of(e.getMessage(), true));
-    }
 
 }

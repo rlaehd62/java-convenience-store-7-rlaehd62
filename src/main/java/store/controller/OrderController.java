@@ -4,7 +4,6 @@ import store.config.ServiceBean;
 import store.service.order.OrderService;
 
 public class OrderController {
-    // TODO: test 패키지의 MVC로 교체하기
     private final OrderService service;
 
     public OrderController() {
