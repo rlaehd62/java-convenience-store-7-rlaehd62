@@ -2,9 +2,9 @@ package store.view;
 
 import camp.nextstep.edu.missionutils.Console;
 import store.config.constant.Message;
-import store.test.order.Order;
-import store.test.product.Product;
-import store.test.product.SalesProduct;
+import store.model.order.Order;
+import store.model.product.Product;
+import store.model.product.SalesProduct;
 
 public class InputView {
     public static String readOrder() {

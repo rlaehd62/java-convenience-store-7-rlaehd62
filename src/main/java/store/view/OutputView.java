@@ -6,12 +6,12 @@ import static store.config.constant.Message.GREETING;
 import java.util.List;
 import java.util.Map;
 import store.config.constant.ErrorMessage;
-import store.test.order.Order;
+import store.model.order.Order;
 import store.model.payment.History;
 import store.model.payment.Receipt;
-import store.test.product.Product;
-import store.test.product.SalesProduct;
-import store.test.product.SalesType;
+import store.model.product.Product;
+import store.model.product.SalesProduct;
+import store.model.product.SalesType;
 
 public class OutputView {
 
@@ -49,14 +49,6 @@ public class OutputView {
                     history.getTotalPrice());
             System.out.println(line);
         });
-//        receipt.forEach(order -> {
-//            SalesProduct salesProduct = order.getSalesProduct();
-//            Product product = salesProduct.getProduct();
-//            Price price = product.getPrice();
-//            int quantity = order.getTotalQuantity();
-//            String line = String.format("%-10s\t%-5s\t%,d", product.getName(), quantity, price.calculate(quantity));
-//            System.out.println(line);
-//        });
     }
 
     private static void printHistoryOfGiveAway(Receipt receipt) {
