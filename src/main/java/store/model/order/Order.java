@@ -1,24 +1,45 @@
 package store.model.order;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import store.model.policy.SalesPolicy;
+import store.model.product.SalesProduct;
 
 public class Order {
-    private final List<OrderItem> orderItems;
+    private final SalesProduct salesProduct;
+    private int amountOfBuy;
+    private int amountOfGet;
 
-    public Order() {
-        orderItems = new ArrayList<>();
+    public Order(SalesProduct salesProduct, int totalQuantity) {
+        this.salesProduct = salesProduct;
+        SalesPolicy policy = salesProduct.getPolicy();
+        this.amountOfGet = policy.extractAmountOfGet(totalQuantity);
+        this.amountOfBuy = totalQuantity - this.amountOfGet;
     }
 
-    public void forEach(Consumer<OrderItem> consumer) {
-        orderItems.forEach(consumer);
+    public SalesProduct getSalesProduct() {
+        return salesProduct;
     }
 
-    public List<OrderItem> filter(Predicate<? super OrderItem> predicate) {
-        return orderItems.stream()
-                .filter(predicate)
-                .toList();
+    public int getAmountOfGet() {
+        return amountOfGet;
+    }
+
+    public void setAmountOfGet(int amountOfGet) {
+        this.amountOfGet = amountOfGet;
+    }
+
+    public int getAmountOfBuy() {
+        return amountOfBuy;
+    }
+
+    public void setAmountOfBuy(int amountOfBuy) {
+        this.amountOfBuy = amountOfBuy;
+    }
+
+    public int getTotalQuantity() {
+        return amountOfBuy + amountOfGet;
+    }
+
+    public boolean isSatisfied() {
+        return getTotalQuantity() <= 0;
     }
 }

@@ -1,9 +1,9 @@
 package store.model.payment;
 
+import store.model.order.Order;
 import store.model.product.Price;
-import store.test.order.Order;
-import store.test.product.Product;
-import store.test.product.SalesProduct;
+import store.model.product.Product;
+import store.model.product.SalesProduct;
 
 public class History {
 

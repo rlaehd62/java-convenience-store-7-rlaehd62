@@ -1,6 +1,6 @@
-package store.test.product;
+package store.model.product;
 
-import store.test.policy.SalesPolicy;
+import store.model.policy.SalesPolicy;
 
 public class SalesProduct {
 
@@ -16,7 +16,7 @@ public class SalesProduct {
         this.salesType = salesType;
     }
 
-    public static SalesProduct of(Product product, SalesPolicy policy,  SalesType type, String quantityInput) {
+    public static SalesProduct of(Product product, SalesPolicy policy, SalesType type, String quantityInput) {
         int quantity = Integer.parseInt(quantityInput);
         return new SalesProduct(product, quantity, policy, type);
     }
@@ -39,12 +39,12 @@ public class SalesProduct {
         this.quantity = quantity;
     }
 
-    public void setPolicy(SalesPolicy policy) {
-        this.policy = policy;
-    }
-
     public SalesPolicy getPolicy() {
         return policy;
+    }
+
+    public void setPolicy(SalesPolicy policy) {
+        this.policy = policy;
     }
 
     public SalesType getSalesType() {
@@ -56,7 +56,7 @@ public class SalesProduct {
     }
 
     public boolean isNormal() {
-        return isType(SalesType.NORMAL) || quantity < policy.getAmountOfBuy();
+        return isType(SalesType.NORMAL) || quantity < policy.getTotalAmount();
     }
 
     public boolean isType(SalesType type) {

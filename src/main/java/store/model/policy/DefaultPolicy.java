@@ -1,4 +1,4 @@
-package store.test.policy;
+package store.model.policy;
 
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;

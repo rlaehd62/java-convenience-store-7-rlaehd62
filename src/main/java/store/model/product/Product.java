@@ -1,16 +1,19 @@
-package store.test.product;
+package store.model.product;
 
+import java.util.ArrayList;
 import java.util.List;
-import store.model.product.Price;
+import java.util.function.Consumer;
 
 public class Product {
 
     private final String name;
     private final Price price;
+    private final List<SalesProduct> salesProducts;
 
     public Product(String name, int price) {
         this.name = name;
         this.price = new Price(price);
+        this.salesProducts = new ArrayList<>();
     }
 
     public static Product of(List<String> elements) {
@@ -19,12 +22,24 @@ public class Product {
         return new Product(name, price);
     }
 
+    public void addSalesProduct(SalesProduct salesProduct) {
+        salesProducts.add(salesProduct);
+    }
+
     public String getName() {
         return name;
     }
 
     public Price getPrice() {
         return price;
+    }
+
+    public List<SalesProduct> getSalesProducts() {
+        return salesProducts;
+    }
+
+    public void forEach(Consumer<SalesProduct> consumer) {
+        salesProducts.forEach(consumer);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package store.test.order.manager;
+package store.model.order.manager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,10 +6,10 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import store.test.order.Order;
-import store.test.product.Product;
-import store.test.product.SalesProduct;
-import store.test.product.SalesType;
+import store.model.order.Order;
+import store.model.product.Product;
+import store.model.product.SalesProduct;
+import store.model.product.SalesType;
 
 public class OrderManager {
     private final List<Order> orders;

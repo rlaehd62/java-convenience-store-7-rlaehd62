@@ -1,11 +1,11 @@
-package store.test.policy.manager;
+package store.model.policy.manager;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import store.test.policy.SalesPolicy;
+import store.model.policy.SalesPolicy;
 
 public class SalesPolicyManager {
     private final Map<String, SalesPolicy> policies;

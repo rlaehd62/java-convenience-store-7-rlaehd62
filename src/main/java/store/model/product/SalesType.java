@@ -1,6 +1,6 @@
-package store.test.product;
+package store.model.product;
 
-import store.test.policy.SalesPolicy;
+import store.model.policy.SalesPolicy;
 
 public enum SalesType {
     NORMAL("일반 상품"),

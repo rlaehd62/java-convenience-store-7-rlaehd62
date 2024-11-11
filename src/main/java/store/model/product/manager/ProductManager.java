@@ -1,11 +1,11 @@
-package store.test.product.manager;
+package store.model.product.manager;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import store.test.product.Product;
+import store.model.product.Product;
 
 public class ProductManager {
     private final Map<String, Product> products;

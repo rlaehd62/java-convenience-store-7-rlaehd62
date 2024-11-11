@@ -7,11 +7,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import store.model.order.Order;
 import store.model.product.Price;
-import store.test.order.Order;
-import store.test.product.Product;
-import store.test.product.SalesProduct;
-import store.test.product.SalesType;
+import store.model.product.Product;
+import store.model.product.SalesProduct;
+import store.model.product.SalesType;
 
 public class Receipt {
     private List<Order> purchaseHistory;
@@ -86,7 +86,7 @@ public class Receipt {
         }
         Price totalPolicyDiscount = getTotalPolicyDiscount(SalesType.NORMAL, Order::getTotalQuantity);
         int membershipDiscount = (int) (totalPolicyDiscount.money() * 0.3d);
-        return new Price(membershipDiscount);
+        return new Price(Math.max(-8000, membershipDiscount));
     }
 
     public Price getFinalPrice() {
