@@ -1,13 +1,12 @@
-package store.test.repository;
+package store.repository.product;
 
 import java.util.List;
-import java.util.Optional;
 import store.config.constant.ErrorMessage;
 import store.exception.ProductException;
-import store.test.product.Product;
-import store.test.product.SalesProduct;
-import store.test.product.SalesType;
-import store.test.product.manager.SalesProductManager;
+import store.model.product.Product;
+import store.model.product.SalesProduct;
+import store.model.product.SalesType;
+import store.model.product.manager.SalesProductManager;
 
 public class SalesProductRepository {
 
@@ -17,13 +16,14 @@ public class SalesProductRepository {
         manager = new SalesProductManager();
     }
 
-    public void save(SalesProduct product) {
+    public boolean save(SalesProduct product) {
         String name = product.getProduct().getName();
         SalesType type = product.getSalesType();
-        if(existsSalesProductWithType(name, type)) {
-            return;
+        if (existsSalesProductWithType(name, type)) {
+            return false;
         }
         manager.addProduct(product);
+        return true;
     }
 
     public List<SalesProduct> findAll() {

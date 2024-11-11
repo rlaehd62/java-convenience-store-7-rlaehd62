@@ -1,8 +1,8 @@
-package store.test.repository;
+package store.repository.policy;
 
-import store.test.policy.DefaultPolicy;
-import store.test.policy.SalesPolicy;
-import store.test.policy.manager.SalesPolicyManager;
+import store.model.policy.DefaultPolicy;
+import store.model.policy.SalesPolicy;
+import store.model.policy.manager.SalesPolicyManager;
 
 public class SalesPolicyRepository {
 

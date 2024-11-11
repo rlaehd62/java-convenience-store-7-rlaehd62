@@ -1,7 +1,7 @@
-package store.test.repository;
+package store.repository.payment;
 
 import java.util.List;
-import store.test.order.Order;
+import store.model.order.Order;
 import store.model.payment.Receipt;
 
 public class ReceiptRepository {
@@ -22,6 +22,10 @@ public class ReceiptRepository {
 
     public Receipt getReceipt() {
         return receipt;
+    }
+
+    public void drop(Order order) {
+        receipt.removeOrder(order);
     }
 
     public void save(Order order) {

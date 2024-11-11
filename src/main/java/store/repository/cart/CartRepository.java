@@ -1,4 +1,4 @@
-package store.repository;
+package store.repository.cart;
 
 import java.util.List;
 import store.model.cart.Cart;

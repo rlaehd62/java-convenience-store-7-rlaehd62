@@ -1,9 +1,9 @@
-package store.test.repository;
+package store.repository.product;
 
 import java.util.Optional;
 import store.model.product.Price;
-import store.test.product.Product;
-import store.test.product.manager.ProductManager;
+import store.model.product.Product;
+import store.model.product.manager.ProductManager;
 
 public class ProductRepository {
 
