@@ -1,7 +1,7 @@
 package store.controller;
 
 import store.config.ServiceBean;
-import store.test.service.SalesProductService;
+import store.service.product.SalesProductService;
 import store.view.OutputView;
 
 public class FrontController {

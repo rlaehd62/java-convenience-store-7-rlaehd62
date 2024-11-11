@@ -1,6 +1,5 @@
 package store.controller;
 
-import store.model.order.Order;
 import store.service.Validator;
 import store.utility.FlowHandler;
 import store.view.InputView;
@@ -22,10 +21,6 @@ public class ControllerBroker {
         validator = new Validator();
     }
 
-    private void runPayment(Order order) {
-//        FlowHandler.run(() -> paymentController.processOrder(order), e -> OutputView.of(e.getMessage(), true));
-    }
-
     private void runMainProcess() {
         FlowHandler.run(() -> {
             frontController.showFront();
@@ -35,8 +30,8 @@ public class ControllerBroker {
             OutputView.of("");
             OutputView.of(e.getMessage());
         });
+
         paymentController.processOrder();
-//        runPayment(order.get());
     }
 
     private boolean askForRetry() {

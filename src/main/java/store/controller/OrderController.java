@@ -1,7 +1,7 @@
 package store.controller;
 
 import store.config.ServiceBean;
-import store.service.OrderService;
+import store.service.order.OrderService;
 
 public class OrderController {
     // TODO: test 패키지의 MVC로 교체하기
