@@ -27,15 +27,18 @@ public class InputView {
     }
 
     public static String readForGiveAways(String name) {
-        System.out.println();
         System.out.printf(Message.MORE_QUANTITY.toString(), name);
         System.out.println();
-        return Console.readLine();
+        String input = Console.readLine();
+        System.out.println();
+        return input;
     }
 
     public static String readForRetry() {
         System.out.println();
         System.out.println(Message.CONTINUE.getConsoleMessage());
-        return Console.readLine();
+        String input = Console.readLine();
+        System.out.println();
+        return input;
     }
 }

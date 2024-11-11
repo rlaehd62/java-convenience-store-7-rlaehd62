@@ -48,7 +48,6 @@ public class OutputView {
     }
 
     private static void printHistoryOfPurchase(Receipt receipt) {
-        System.out.println();
         System.out.println(Message.RECEIPT_CONVENIENCE_NAME);
         System.out.println(Message.RECEIPT_HEAD_COLUMN);
 
