@@ -19,18 +19,18 @@ public class SalesPolicyService {
         this.salesPolicyRepository = salesPolicyRepository;
     }
 
-    private SalesPolicy loadPolicy(String line) {
-        Validator.validate(line, Regex.LIST_FORMAT, ErrorMessage.FILE_FORMAT_INVALID);
-        String DELIMITER = SystemConfig.DELIMITER.getValue();
-        List<String> elements = List.of(line.split(DELIMITER));
-        return SalesPolicy.of(elements);
-    }
-
     public void loadPolicies() {
         DataFile file = DataReader.readData(DataPath.PROMOTIONS_FILE);
         file.forEach(line -> {
             SalesPolicy policy = loadPolicy(line);
             salesPolicyRepository.save(policy);
         });
+    }
+
+    private SalesPolicy loadPolicy(String line) {
+        Validator.validate(line, Regex.LIST_FORMAT, ErrorMessage.FILE_FORMAT_INVALID);
+        String DELIMITER = SystemConfig.DELIMITER.getValue();
+        List<String> elements = List.of(line.split(DELIMITER));
+        return SalesPolicy.of(elements);
     }
 }

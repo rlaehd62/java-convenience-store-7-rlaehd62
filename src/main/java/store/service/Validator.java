@@ -2,7 +2,6 @@ package store.service;
 
 import store.config.constant.ErrorMessage;
 import store.config.constant.Regex;
-import store.exception.FileInputException;
 import store.exception.OrderException;
 
 public class Validator {
@@ -10,12 +9,6 @@ public class Validator {
     private boolean validate(String input, Regex regex) {
         final String expression = regex.getExpression();
         return input.matches(expression);
-    }
-
-    public void isListFormatted(String input) {
-        if (!validate(input, Regex.LIST_FORMAT)) {
-            throw new FileInputException(ErrorMessage.FILE_FORMAT_INVALID);
-        }
     }
 
     public boolean isValidOrder(String input) {

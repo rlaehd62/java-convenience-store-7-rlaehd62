@@ -24,6 +24,15 @@ public class CartService {
         this.salesProductService = salesProductService;
     }
 
+    public void createCart(String input) {
+        String DELIMITER = SystemConfig.DELIMITER.getValue();
+        List<String> elements = List.of(input.split(DELIMITER));
+        elements.forEach(line -> {
+            CartItem item = createCartItem(line);
+            cartRepository.save(item);
+        });
+    }
+
     public CartItem createCartItem(String itemInput) {
         itemInput = itemInput.substring(1, itemInput.length() - 1);
         String DELIMITER = SystemConfig.BAR.getValue();
@@ -31,15 +40,14 @@ public class CartService {
         return CartItem.of(elements);
     }
 
-    public void updateGiveAways(CartItem item) {
-        try {
-            String name = item.getName();
-            SalesProduct salesProduct = salesProductRepository.findSalesProductsByName(name, SalesType.PROMOTIONAL);
-            int expected = salesProductService.optimizeQuantityForPromotion(salesProduct, item.getQuantity());
-            item.setQuantity(expected);
-        } catch (Exception e) {
-            // do nothing.
-        }
+    public void searchForGiveAways(Consumer<CartItem> successHandler) {
+        List<CartItem> cartItems = cartRepository.findAll();
+        cartItems.forEach(cartItem -> {
+            if (!hasGiveAways(cartItem)) {
+                return;
+            }
+            successHandler.accept(cartItem);
+        });
     }
 
     public boolean hasGiveAways(CartItem item) {
@@ -53,14 +61,15 @@ public class CartService {
         }
     }
 
-    public void searchForGiveAways(Consumer<CartItem> successHandler) {
-        List<CartItem> cartItems = cartRepository.findAll();
-        cartItems.forEach(cartItem -> {
-            if (!hasGiveAways(cartItem)) {
-                return;
-            }
-            successHandler.accept(cartItem);
-        });
+    public void updateGiveAways(CartItem item) {
+        try {
+            String name = item.getName();
+            SalesProduct salesProduct = salesProductRepository.findSalesProductsByName(name, SalesType.PROMOTIONAL);
+            int expected = salesProductService.optimizeQuantityForPromotion(salesProduct, item.getQuantity());
+            item.setQuantity(expected);
+        } catch (Exception e) {
+            // do nothing.
+        }
     }
 
     public void checkValidityOfCart() {
@@ -70,15 +79,6 @@ public class CartService {
                 cartRepository.clear();
                 throw new ProductException(ErrorMessage.NO_ITEM_FOUND);
             }
-        });
-    }
-
-    public void createCart(String input) {
-        String DELIMITER = SystemConfig.DELIMITER.getValue();
-        List<String> elements = List.of(input.split(DELIMITER));
-        elements.forEach(line -> {
-            CartItem item = createCartItem(line);
-            cartRepository.save(item);
         });
     }
 }

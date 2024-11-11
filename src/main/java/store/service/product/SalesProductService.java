@@ -9,31 +9,28 @@ import store.model.policy.SalesPolicy;
 import store.model.product.SalesProduct;
 import store.model.product.SalesType;
 import store.repository.policy.SalesPolicyRepository;
-import store.repository.product.ProductRepository;
 import store.repository.product.SalesProductRepository;
 import store.utility.DataReader;
 
 public class SalesProductService {
 
     private final SalesPolicyRepository salesPolicyRepository;
-    private final ProductRepository productRepository;
     private final SalesProductRepository salesProductRepository;
 
-    public SalesProductService(SalesPolicyRepository salesPolicyRepository, ProductRepository productRepository,
+    public SalesProductService(SalesPolicyRepository salesPolicyRepository,
                                SalesProductRepository salesProductRepository) {
         this.salesPolicyRepository = salesPolicyRepository;
-        this.productRepository = productRepository;
         this.salesProductRepository = salesProductRepository;
     }
 
-    public int optimizeQuantityForPromotion(SalesProduct salesProduct, int amountOfBuy) {
-        if (amountOfBuy >= salesProduct.getQuantity()) {
-            return amountOfBuy;
-        }
-        SalesPolicy policy = salesProduct.getPolicy();
-        int r = amountOfBuy % policy.getTotalAmount();
-        int addition = r / policy.getAmountOfBuy();
-        return amountOfBuy + addition;
+    public void loadSalesProducts() {
+        DataFile file = DataReader.readData(DataPath.PRODUCTS_FILE);
+        file.forEach(this::updateScalesProduct);
+    }
+
+    public void runThroughSalesProducts(Consumer<SalesProduct> consumer) {
+        salesProductRepository.findAll()
+                .forEach(consumer);
     }
 
     public int getPossibleAmount(SalesProduct salesProduct, int amountOfBuy) {
@@ -48,9 +45,14 @@ public class SalesProductService {
         return possibleSets * (policy.getTotalAmount());
     }
 
-    public void runThroughSalesProducts(Consumer<SalesProduct> consumer) {
-        salesProductRepository.findAll()
-                .forEach(consumer);
+    public int optimizeQuantityForPromotion(SalesProduct salesProduct, int amountOfBuy) {
+        if (amountOfBuy >= salesProduct.getQuantity()) {
+            return amountOfBuy;
+        }
+        SalesPolicy policy = salesProduct.getPolicy();
+        int r = amountOfBuy % policy.getTotalAmount();
+        int addition = r / policy.getAmountOfBuy();
+        return amountOfBuy + addition;
     }
 
     private void updateScalesProduct(String line) {
@@ -63,10 +65,5 @@ public class SalesProductService {
         SalesProduct salesProduct = salesProductRepository.findSalesProductsByName(productName, type);
         salesProduct.setQuantity(Integer.parseInt(elements.get(2)));
         salesProduct.setPolicy(policy);
-    }
-
-    public void loadSalesProducts() {
-        DataFile file = DataReader.readData(DataPath.PRODUCTS_FILE);
-        file.forEach(this::updateScalesProduct);
     }
 }

@@ -2,7 +2,6 @@ package store.service.payment;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import store.model.order.Order;
 import store.model.payment.Receipt;
 import store.model.product.Product;
@@ -10,7 +9,7 @@ import store.model.product.SalesProduct;
 import store.model.product.SalesType;
 import store.repository.order.OrderRepository;
 import store.repository.payment.ReceiptRepository;
-import store.utility.FlowHandler;
+import store.view.callback.PaymentInteface;
 
 public class PaymentService {
 
@@ -22,27 +21,23 @@ public class PaymentService {
         this.receiptRepository = receiptRepository;
     }
 
+    public void prepareReceipt() {
+        List<Order> orders = orderRepository.findAll();
+        orders.forEach(receiptRepository::save);
+    }
+
+    public void confirmMembership(PaymentInteface paymentInteface) {
+        paymentInteface.askForMembership();
+    }
 
     public void setMembership(boolean isMembership) {
         receiptRepository.setMembership(isMembership);
     }
 
-    public void confirmMembership(Supplier<Boolean> supplier, Consumer<Exception> failureHandler) {
-        FlowHandler.runWithRetry(supplier, () -> setMembership(true), failureHandler);
-    }
 
-    public void confirmPayment(Consumer<Order> successHandler) {
+    public void confirmPayment(PaymentInteface paymentInteface) {
         List<Order> orders = orderRepository.findAllWithSalesType(SalesType.NORMAL);
-        orders.forEach(order -> confirmOrder(order, successHandler));
-    }
-
-    public void confirmOrder(Order order, Consumer<Order> successHandler) {
-        SalesProduct salesProduct = order.getSalesProduct();
-        Product product = salesProduct.getProduct();
-        if (!orderRepository.existOrder(product.getName(), SalesType.PROMOTIONAL)) {
-            return;
-        }
-        successHandler.accept(order);
+        orders.forEach(order -> confirmOrder(order, paymentInteface));
     }
 
     public void removeOrderFromReceipt(Order order) {
@@ -50,12 +45,16 @@ public class PaymentService {
         receiptRepository.drop(order);
     }
 
-    public void processReceipt(Consumer<Receipt> consumer) {
-        consumer.accept(receiptRepository.getReceipt());
+    public void confirmOrder(Order order, PaymentInteface paymentInteface) {
+        SalesProduct salesProduct = order.getSalesProduct();
+        Product product = salesProduct.getProduct();
+        if (!orderRepository.existOrder(product.getName(), SalesType.PROMOTIONAL)) {
+            return;
+        }
+        paymentInteface.askForPayment(order);
     }
 
-    public void prepareReceipt() {
-        List<Order> orders = orderRepository.findAll();
-        orders.forEach(receiptRepository::save);
+    public void processReceipt(Consumer<Receipt> consumer) {
+        consumer.accept(receiptRepository.getReceipt());
     }
 }

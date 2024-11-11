@@ -27,20 +27,6 @@ public class ProductService {
         this.salesPolicyRepository = salesPolicyRepository;
     }
 
-    private Product loadProduct(String line) {
-        Validator.validate(line, Regex.LIST_FORMAT, ErrorMessage.FILE_FORMAT_INVALID);
-        String DELIMITER = SystemConfig.DELIMITER.getValue();
-        List<String> elements = List.of(line.split(DELIMITER));
-        return Product.of(elements);
-    }
-
-    private void createSalesProducts(Product product, SalesType type) {
-        SalesProduct salesProduct = SalesProduct.of(product, salesPolicyRepository.DEFAULT_POLICY(), type, "0");
-        if (salesProductRepository.save(salesProduct)) {
-            product.addSalesProduct(salesProduct);
-        }
-    }
-
     public void loadsProducts() {
         DataFile file = DataReader.readData(DataPath.PRODUCTS_FILE);
         file.forEach(line -> {
@@ -50,4 +36,19 @@ public class ProductService {
             createSalesProducts(product, SalesType.NORMAL);
         });
     }
+
+    private void createSalesProducts(Product product, SalesType type) {
+        SalesProduct salesProduct = SalesProduct.of(product, salesPolicyRepository.DEFAULT_POLICY(), type, "0");
+        if (salesProductRepository.save(salesProduct)) {
+            product.addSalesProduct(salesProduct);
+        }
+    }
+
+    private Product loadProduct(String line) {
+        Validator.validate(line, Regex.LIST_FORMAT, ErrorMessage.FILE_FORMAT_INVALID);
+        String DELIMITER = SystemConfig.DELIMITER.getValue();
+        List<String> elements = List.of(line.split(DELIMITER));
+        return Product.of(elements);
+    }
+
 }
