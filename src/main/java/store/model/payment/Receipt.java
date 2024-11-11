@@ -1,7 +1,7 @@
 package store.model.payment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -48,7 +48,7 @@ public class Receipt {
     }
 
     public Map<String, History> getTotalHistory() {
-        Map<String, History> history = new HashMap<>();
+        Map<String, History> history = new LinkedHashMap<>();
         forEach(order -> {
             SalesProduct salesProduct = order.getSalesProduct();
             Product produt = salesProduct.getProduct();
