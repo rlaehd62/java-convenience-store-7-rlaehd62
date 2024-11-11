@@ -1,25 +1,17 @@
-package store.test.service;
+package store.service.product;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Consumer;
-import store.config.constant.ErrorMessage;
-import store.config.constant.Regex;
 import store.config.system.DataPath;
 import store.config.system.SystemConfig;
-import store.exception.ProductException;
 import store.model.DataFile;
-import store.test.policy.SalesPolicy;
-import store.test.product.Product;
-import store.test.product.SalesProduct;
-import store.test.product.SalesType;
-import store.test.repository.ProductRepository;
-import store.test.repository.SalesPolicyRepository;
-import store.test.repository.SalesProductRepository;
+import store.model.policy.SalesPolicy;
+import store.model.product.SalesProduct;
+import store.model.product.SalesType;
+import store.repository.policy.SalesPolicyRepository;
+import store.repository.product.ProductRepository;
+import store.repository.product.SalesProductRepository;
 import store.utility.DataReader;
-import store.utility.Validator;
 
 public class SalesProductService {
 
@@ -48,6 +40,11 @@ public class SalesProductService {
         SalesPolicy policy = salesProduct.getPolicy();
         amountOfBuy = Math.min(salesProduct.getQuantity(), amountOfBuy);
         int possibleSets = amountOfBuy / (policy.getTotalAmount());
+        int expectedQuantity = possibleSets * (policy.getTotalAmount());
+        int remainingQuantity = salesProduct.getQuantity() - expectedQuantity;
+        if (remainingQuantity > 0 && (amountOfBuy - expectedQuantity) > remainingQuantity) {
+            return expectedQuantity + remainingQuantity;
+        }
         return possibleSets * (policy.getTotalAmount());
     }
 

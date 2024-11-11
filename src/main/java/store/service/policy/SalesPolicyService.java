@@ -1,4 +1,4 @@
-package store.test.service;
+package store.service.policy;
 
 import java.util.List;
 import store.config.constant.ErrorMessage;
@@ -6,8 +6,8 @@ import store.config.constant.Regex;
 import store.config.system.DataPath;
 import store.config.system.SystemConfig;
 import store.model.DataFile;
-import store.test.policy.SalesPolicy;
-import store.test.repository.SalesPolicyRepository;
+import store.model.policy.SalesPolicy;
+import store.repository.policy.SalesPolicyRepository;
 import store.utility.DataReader;
 import store.utility.Validator;
 

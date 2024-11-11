@@ -1,18 +1,19 @@
-package store.service;
+package store.service.order;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import store.config.constant.ErrorMessage;
 import store.exception.ProductException;
 import store.model.cart.CartItem;
-import store.repository.CartRepository;
-import store.repository.OrderRepository;
-import store.test.order.Order;
-import store.test.product.Product;
-import store.test.product.SalesProduct;
-import store.test.product.SalesType;
-import store.test.repository.ReceiptRepository;
-import store.test.repository.SalesProductRepository;
-import store.test.service.SalesProductService;
+import store.model.order.Order;
+import store.model.product.Product;
+import store.model.product.SalesProduct;
+import store.model.product.SalesType;
+import store.repository.cart.CartRepository;
+import store.repository.order.OrderRepository;
+import store.repository.payment.ReceiptRepository;
+import store.repository.product.SalesProductRepository;
+import store.service.product.SalesProductService;
 
 public class OrderService {
     private final OrderRepository orderRepository;
@@ -37,32 +38,81 @@ public class OrderService {
             Product product = salesProduct.getProduct();
             String name = product.getName();
             SalesProduct promotional = salesProductRepository.findSalesProductsByName(name, SalesType.PROMOTIONAL);
-            if (salesProduct.isType(SalesType.NORMAL) && promotional.isNormal()) {
+            if (!salesProduct.isType(SalesType.PROMOTIONAL) && promotional.isNormal()) {
                 int quantity = order.getTotalQuantity();
                 int remainder = promotional.getQuantity();
                 promotional.setQuantity(0);
                 order.setAmountOfBuy(quantity - remainder);
             }
-
         } catch (Exception e) {
-            // Do Nothing ..
         }
     }
 
-    private void processTransaction(Order order) {
-        takePromotionalsFirst(order);
+//    private void processTransaction(Order order) {
+//        takePromotionalsFirst(order);
+//        SalesProduct salesProduct = order.getSalesProduct();
+//        int remainingQuantity = order.getTotalQuantity();
+//        if (!order.isSatisfied() && !salesProduct.hasQuantity(remainingQuantity)) {
+//            throw new ProductException(ErrorMessage.QUANTITY_OVERFLOW);
+//        }
+//        int currentQuantity = salesProduct.getQuantity();
+//        salesProduct.setQuantity(currentQuantity - remainingQuantity);
+//    }
+
+    private void runPromotionTransaction(Order order) {
         SalesProduct salesProduct = order.getSalesProduct();
-        if (!salesProduct.hasQuantity(order.getTotalQuantity())) {
+        int totalQuantity = order.getTotalQuantity();
+        int currentQuantity = salesProduct.getQuantity();
+        if (totalQuantity > currentQuantity) {
             throw new ProductException(ErrorMessage.QUANTITY_OVERFLOW);
         }
-        int requiredQuantity = order.getTotalQuantity();
-        int currentQuantity = salesProduct.getQuantity();
-        salesProduct.setQuantity(currentQuantity - requiredQuantity);
+        salesProduct.setQuantity(currentQuantity - totalQuantity);
+    }
+
+    private void validateNormal(Order order) {
+        AtomicInteger totalQuantity = new AtomicInteger(order.getTotalQuantity());
+        AtomicInteger totalDecrease = new AtomicInteger(0);
+        Product product = order.getSalesProduct().getProduct();
+        product.forEach(salesProduct -> {
+            int decrease = Math.min(salesProduct.getQuantity(), totalQuantity.get());
+            totalDecrease.getAndAdd(decrease);
+        });
+        if ((totalQuantity.get()) > (totalDecrease.get())) {
+            throw new ProductException(ErrorMessage.QUANTITY_OVERFLOW);
+        }
+    }
+
+    private void runNormalTransaction(Order order) {
+        AtomicInteger totalQuantity = new AtomicInteger(order.getTotalQuantity());
+        Product product = order.getSalesProduct().getProduct();
+        product.forEach(salesProduct -> {
+            int decrease = Math.min(salesProduct.getQuantity(), totalQuantity.get());
+            salesProduct.setQuantity(salesProduct.getQuantity() - decrease);
+        });
+    }
+
+    // Consumer말고 있음 (CallBack Interface 사용하기)
+
+    private void processNormal(Order order) {
+        validateNormal(order);
+        runNormalTransaction(order);
+    }
+
+    private void processTransaction(Order order) {
+        SalesProduct salesProduct = order.getSalesProduct();
+        if (salesProduct.isType(SalesType.PROMOTIONAL)) {
+            runPromotionTransaction(order);
+            return;
+        }
+        processNormal(order);
     }
 
     public void runTransaction() {
         List<Order> orders = receiptRepository.findAll();
         orders.forEach(this::processTransaction);
+    }
+
+    public void clear() {
         cartRepository.clear();
         orderRepository.clear();
         receiptRepository.clear();

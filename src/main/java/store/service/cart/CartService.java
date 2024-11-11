@@ -1,4 +1,4 @@
-package store.service;
+package store.service.cart;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -6,11 +6,11 @@ import store.config.constant.ErrorMessage;
 import store.config.system.SystemConfig;
 import store.exception.ProductException;
 import store.model.cart.CartItem;
-import store.repository.CartRepository;
-import store.test.product.SalesProduct;
-import store.test.product.SalesType;
-import store.test.repository.SalesProductRepository;
-import store.test.service.SalesProductService;
+import store.model.product.SalesProduct;
+import store.model.product.SalesType;
+import store.repository.cart.CartRepository;
+import store.repository.product.SalesProductRepository;
+import store.service.product.SalesProductService;
 
 public class CartService {
     private final SalesProductRepository salesProductRepository;
@@ -23,6 +23,7 @@ public class CartService {
         this.cartRepository = cartRepository;
         this.salesProductService = salesProductService;
     }
+
     public CartItem createCartItem(String itemInput) {
         itemInput = itemInput.substring(1, itemInput.length() - 1);
         String DELIMITER = SystemConfig.BAR.getValue();
