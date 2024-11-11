@@ -17,22 +17,6 @@ public class Cart {
         items.add(item);
     }
 
-//    public void validate() {
-//        Inventory inventory = SystemBean.getInstance().getInventory();
-//        items.forEach(cartItem -> {
-//            String name = cartItem.getName();
-//            int quantity = cartItem.getQuantity();
-//            if (!inventory.hasItem(name)) {
-//                throw new OrderException(ErrorMessage.NO_ITEM_FOUND);
-//            }
-//
-//            if (!inventory.hasEnoughQuantity(name, quantity)) {
-//                throw new OrderException(ErrorMessage.QUANTITY_OVERFLOW);
-//            }
-//        });
-//    }
-
-
     public List<CartItem> getItems() {
         return items;
     }

@@ -1,5 +1,6 @@
 package store.model.product;
 
+import store.config.constant.Message;
 import store.model.policy.SalesPolicy;
 
 public class SalesProduct {
@@ -70,8 +71,10 @@ public class SalesProduct {
     @Override
     public String toString() {
         if (quantity <= 0) {
-            return String.format("- %s 재고 없음 %s", product, policy);
+            String message = Message.PRODUCT_WITHOUT_QUANTITY.toString();
+            return String.format(message, product, policy);
         }
-        return String.format("- %s %s개 %s", product, quantity, policy);
+        String message = Message.PRODUCT_WITH_QUANTITY.toString();
+        return String.format(message, product, quantity, policy);
     }
 }
