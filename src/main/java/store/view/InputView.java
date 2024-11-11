@@ -1,22 +1,29 @@
 package store.view;
 
 import camp.nextstep.edu.missionutils.Console;
+import store.config.constant.ErrorMessage;
 import store.config.constant.Message;
-import store.model.order.Order;
-import store.model.product.Product;
-import store.model.product.SalesProduct;
+import store.config.constant.Regex;
+import store.utility.FlowHandler;
+import store.utility.Validator;
 
 public class InputView {
     public static String readOrder() {
-        System.out.println();
         System.out.println(Message.PURCHASE_ITEM);
-        return Console.readLine();
+        String input = Console.readLine();
+        System.out.println();
+        return input;
     }
 
-    public static String readForMembershipDiscount() {
-        System.out.println();
-        System.out.println("멤버십 할인을 받으시겠습니까? (Y/N)");
-        return Console.readLine();
+    public static boolean readForYN(Message message, String... arguments) {
+        return FlowHandler.runWithReturnWithBoolean(() -> {
+            System.out.printf(message.getConsoleMessage(), arguments);
+            System.out.println();
+            String yn = Console.readLine();
+            System.out.println();
+            Validator.validate(yn, Regex.YES_OR_NO, ErrorMessage.YN_FAILURE);
+            return yn.equals("Y");
+        }, e -> OutputView.of(e.getMessage(), true));
     }
 
     public static String readForGiveAways(String name) {
@@ -26,19 +33,9 @@ public class InputView {
         return Console.readLine();
     }
 
-    public static String readForPromotion(Order order) {
-        SalesProduct salesProduct = order.getSalesProduct();
-        Product product = salesProduct.getProduct();
-        String name = product.getName();
-        int quantity = order.getAmountOfBuy();
-        System.out.println();
-        System.out.println(String.format("현재 %s %d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)", name, quantity));
-        return Console.readLine();
-    }
-
     public static String readForRetry() {
         System.out.println();
-        System.out.println("감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)");
+        System.out.println(Message.CONTINUE.getConsoleMessage());
         return Console.readLine();
     }
 }
