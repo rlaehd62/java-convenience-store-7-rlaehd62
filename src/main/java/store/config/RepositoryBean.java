@@ -1,11 +1,11 @@
 package store.config;
 
-import store.repository.CartRepository;
-import store.repository.OrderRepository;
-import store.test.repository.ProductRepository;
-import store.test.repository.ReceiptRepository;
-import store.test.repository.SalesPolicyRepository;
-import store.test.repository.SalesProductRepository;
+import store.repository.cart.CartRepository;
+import store.repository.order.OrderRepository;
+import store.repository.payment.ReceiptRepository;
+import store.repository.policy.SalesPolicyRepository;
+import store.repository.product.ProductRepository;
+import store.repository.product.SalesProductRepository;
 
 public class RepositoryBean {
     private static RepositoryBean instance = null;

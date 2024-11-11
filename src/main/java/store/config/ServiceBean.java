@@ -1,11 +1,11 @@
 package store.config;
 
-import store.service.CartService;
-import store.service.OrderService;
-import store.service.PaymentService;
-import store.test.service.ProductService;
-import store.test.service.SalesPolicyService;
-import store.test.service.SalesProductService;
+import store.service.cart.CartService;
+import store.service.order.OrderService;
+import store.service.payment.PaymentService;
+import store.service.policy.SalesPolicyService;
+import store.service.product.ProductService;
+import store.service.product.SalesProductService;
 
 public class ServiceBean {
     private static ServiceBean instance = null;
@@ -20,7 +20,8 @@ public class ServiceBean {
     private ServiceBean() {
         bean = RepositoryBean.getInstance();
         salesPolicyService = new SalesPolicyService(bean.getSalesPolicyRepository());
-        productService = new ProductService(bean.getProductRepository(), bean.getSalesProductRepository(), bean.getSalesPolicyRepository());
+        productService = new ProductService(bean.getProductRepository(), bean.getSalesProductRepository(),
+                bean.getSalesPolicyRepository());
         salesProductService = new SalesProductService(bean.getSalesPolicyRepository(), bean.getProductRepository(),
                 bean.getSalesProductRepository());
         paymentService = new PaymentService(bean.getOrderRepository(), bean.getReceiptRepository());
